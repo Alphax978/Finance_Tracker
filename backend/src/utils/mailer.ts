@@ -21,8 +21,10 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
         return false
     }
 
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"
+
     const { error } = await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+        from: `Finance Tracker <${fromAddress}>`,
         to,
         subject,
         html,
