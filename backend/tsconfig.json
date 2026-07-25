@@ -40,5 +40,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  // api/index.ts is bundled and type-stripped by Vercel's own build
+  // pipeline, not by this project's tsc — it lives outside rootDir on
+  // purpose and isn't part of the local build/dev program.
+  "exclude": ["api"]
 }

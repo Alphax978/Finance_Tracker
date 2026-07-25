@@ -47,7 +47,12 @@ export const getTelegramBot = (): Telegraf | null => {
     return bot;
 };
 
-export const launchTelegramBot = () => {
+// Long-polling only makes sense on a persistently running process — local
+// dev (npm run dev / node build/server.js). The production deployment runs
+// as a Vercel serverless function instead, which receives updates via
+// webhook (see controllers/telegramController.ts), so this is never called
+// there.
+export const launchTelegramBotPolling = () => {
     const instance = getTelegramBot();
     if (!instance) {
         console.warn("[telegram] TELEGRAM_BOT_TOKEN not set — Telegram automation is disabled.");

@@ -1,12 +1,21 @@
 import { Request, Response } from 'express'
 import FinancialRecordModel from '../model/financialRecordModel'
 
+const getUserId = (req: Request): string | null => {
+    const { userId } = req.params
+    if (!userId || Array.isArray(userId)) return null
+    return userId
+}
 
 export const getAllByUserId = async (req: Request, res: Response) => {
     try {
-        const userId = req.params.userId
+        const userId = getUserId(req)
+        if (!userId) {
+            res.status(400).json({ success: false, message: 'userId is required' })
+            return
+        }
 
-        const records = await FinancialRecordModel.find({ userId: userId })
+        const records = await FinancialRecordModel.find({ userId })
         res.status(200).json({success: true, message:"user found", records})
     } catch (err) {
         res.status(500).json({succes: false, message: 'Failed to fetch financial records' })
