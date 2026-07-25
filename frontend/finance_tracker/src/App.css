@@ -771,6 +771,20 @@ body::before {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
 }
 
+/* The browser-native number spinner arrows look inconsistent and dated
+   across every number input in the app — drop them everywhere instead of
+   trying to restyle them, typing the value directly works fine. */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .form-container button {
   --btn-glow: 37, 99, 235;
   display: block;
