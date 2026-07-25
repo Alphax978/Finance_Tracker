@@ -1,4 +1,5 @@
 {
+  "buildCommand": "echo 'Skipping tsc — Vercel compiles api/*.ts and its src/ imports directly, build/ is only used for local/self-hosted runs'",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }
   ],
