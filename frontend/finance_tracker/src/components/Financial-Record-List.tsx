@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
 import { categoryColor } from '../constants/categories'
+import Spinner from './Spinner'
 
 interface RecordRowProps {
   record: {
@@ -197,7 +198,7 @@ const FinancialRecordList = () => {
   if (!context) {
     throw new Error('FinancialRecordList must be used within a FinancialRecordsProvider')
   }
-  const { record: records, updateRecord, deleteRecord } = context
+  const { record: records, isLoading, updateRecord, deleteRecord } = context
   const currency = useContext(currencyContext)
   if (!currency) {
     throw new Error('FinancialRecordList must be used within a CurrencyProvider')
@@ -233,7 +234,9 @@ const FinancialRecordList = () => {
         </div>
       </div>
 
-      {records.length === 0 ? (
+      {isLoading ? (
+        <Spinner label="Loading your records…" />
+      ) : records.length === 0 ? (
         <div className="record-list-empty">
           <svg className="record-list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />

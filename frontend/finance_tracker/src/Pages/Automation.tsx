@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { financialRecordContext } from '../context/financialRecordContext'
+import Spinner from '../components/Spinner'
 
 interface SubscriptionData {
   status: string
@@ -42,8 +43,10 @@ const AutomationContent = () => {
 
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null)
   const [isActive, setIsActive] = useState(false)
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true)
   const [subscribing, setSubscribing] = useState(false)
   const [integrations, setIntegrations] = useState<Integration[]>([])
+  const [integrationsLoading, setIntegrationsLoading] = useState(false)
   const [linkCode, setLinkCode] = useState<{ platform: Platform; code: string; botUsername: string | null } | null>(null)
   const [generatingFor, setGeneratingFor] = useState<Platform | null>(null)
 
@@ -59,6 +62,8 @@ const AutomationContent = () => {
         setIsActive(response.data.isActive)
       } catch {
         toast.error('Failed to load subscription status')
+      } finally {
+        setSubscriptionLoading(false)
       }
     }
 
@@ -69,6 +74,7 @@ const AutomationContent = () => {
     if (!user || !isActive) return
 
     const loadIntegrations = async () => {
+      setIntegrationsLoading(true)
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/automation/${user.id}`
@@ -76,6 +82,8 @@ const AutomationContent = () => {
         setIntegrations(response.data.integrations ?? [])
       } catch {
         toast.error('Failed to load connected chats')
+      } finally {
+        setIntegrationsLoading(false)
       }
     }
 
@@ -153,7 +161,9 @@ const AutomationContent = () => {
     <div className="dahsboard-container">
       <h1>Chat <span className="page-title-accent">Automation</span></h1>
 
-      {!isActive ? (
+      {subscriptionLoading ? (
+        <Spinner label="Checking your subscription…" size="lg" />
+      ) : !isActive ? (
         <div className="automation-upsell">
           <span className="form-eyebrow">
             <svg className="eyebrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -189,7 +199,7 @@ const AutomationContent = () => {
             <span className="automation-example-message">Groceries, 45.50</span>
           </div>
           <button type="button" className="automation-subscribe-button" onClick={handleSubscribe} disabled={subscribing}>
-            {subscribing ? 'Redirecting…' : 'Subscribe — $2/month'}
+            {subscribing ? (<><Spinner inline size="sm" />Redirecting…</>) : 'Subscribe — $2/month'}
           </button>
           {subscription && (
             <p className="automation-status-note">
@@ -206,6 +216,9 @@ const AutomationContent = () => {
             </button>
           </div>
 
+          {integrationsLoading ? (
+            <Spinner label="Loading your connections…" />
+          ) : (
           <div className="automation-platforms">
             {(Object.keys(PLATFORM_LABEL) as Platform[]).map((platform) => {
               const connected = connectedPlatforms.has(platform)
@@ -249,7 +262,7 @@ const AutomationContent = () => {
                           onClick={() => handleGenerateCode(platform)}
                           disabled={generatingFor === platform}
                         >
-                          {generatingFor === platform ? 'Generating…' : 'Get linking code'}
+                          {generatingFor === platform ? (<><Spinner inline size="sm" />Generating…</>) : 'Get linking code'}
                         </button>
                       ) : (
                         <div className="automation-link-panel">
@@ -298,6 +311,7 @@ const AutomationContent = () => {
               )
             })}
           </div>
+          )}
 
           <div className="analysis-section">
             <span className="form-eyebrow">

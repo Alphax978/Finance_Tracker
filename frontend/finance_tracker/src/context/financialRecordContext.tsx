@@ -16,6 +16,7 @@ interface financialRecord {
 
 interface financialRecordContextType {
     record: financialRecord[]
+    isLoading: boolean
     addRecord: (record: financialRecord) => void;
     updateRecord: (id: string, newRecord: financialRecord) => void;
     deleteRecord: (id: string) => void;
@@ -31,6 +32,7 @@ export const FinancialRecordsProvider = ({
     children: React.ReactNode;
 }) => {
     const [records, setRecords] = useState<financialRecord[]>([])
+    const [isLoading, setIsLoading] = useState(true)
     const { user } = useUser()
 
     // Pure data fetch — no setState here. Each effect below owns its own
@@ -55,6 +57,8 @@ export const FinancialRecordsProvider = ({
                 setRecords(await loadRecordsFromServer(user.id))
             } catch {
                 toast.error("Failed to fetch records")
+            } finally {
+                setIsLoading(false)
             }
         }
         load()
@@ -130,7 +134,7 @@ export const FinancialRecordsProvider = ({
     }
 
     return (
-        <financialRecordContext.Provider value={{ record: records, addRecord, updateRecord, deleteRecord }}>
+        <financialRecordContext.Provider value={{ record: records, isLoading, addRecord, updateRecord, deleteRecord }}>
             {" "}
             {children}
         </financialRecordContext.Provider>

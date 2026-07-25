@@ -5,6 +5,7 @@ import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
 import { categoryColor } from '../constants/categories'
 import { useCountUp } from '../hooks/useCountUp'
+import Spinner from '../components/Spinner'
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -16,7 +17,7 @@ const InsightsContent = () => {
   if (!recordCtx) {
     throw new Error('Insights must be used within a FinancialRecordsProvider')
   }
-  const { record: records } = recordCtx
+  const { record: records, isLoading } = recordCtx
 
   const currencyCtx = useContext(currencyContext)
   if (!currencyCtx) {
@@ -90,7 +91,9 @@ const InsightsContent = () => {
     <div className="dahsboard-container">
       <h1>My <span className="page-title-accent">Insights</span></h1>
 
-      {records.length === 0 ? (
+      {isLoading ? (
+        <Spinner label="Loading your insights…" size="lg" />
+      ) : records.length === 0 ? (
         <div className="record-list-empty">
           <svg className="record-list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />

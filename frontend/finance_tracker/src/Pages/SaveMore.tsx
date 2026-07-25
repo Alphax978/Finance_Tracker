@@ -5,6 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
+import Spinner from '../components/Spinner'
 
 interface SavingsGoalData {
   monthlySalary: number
@@ -41,6 +42,7 @@ const SaveMoreContent = () => {
   const [goal, setGoal] = useState<SavingsGoalData | null>(null)
   const [progress, setProgress] = useState<ProgressData | null>(null)
   const [saving, setSaving] = useState(false)
+  const [goalLoading, setGoalLoading] = useState(true)
 
   useEffect(() => {
     if (!user) return
@@ -56,6 +58,8 @@ const SaveMoreContent = () => {
         }
       } catch {
         toast.error('Failed to load your salary')
+      } finally {
+        setGoalLoading(false)
       }
     }
 
@@ -175,7 +179,9 @@ const SaveMoreContent = () => {
                 onChange={(e) => setMonthlySalary(e.target.value)}
               />
             </div>
-            <button type="submit" disabled={saving}>{saving ? 'Scheduling…' : 'Schedule Alert'}</button>
+            <button type="submit" disabled={saving}>
+              {saving ? (<><Spinner inline size="sm" />Scheduling…</>) : 'Schedule Alert'}
+            </button>
             <p className="form-note">
               We'll email you if you spend 30% of your monthly salary this month. A second alert follows at 50%.{" "}
               <span className="form-note-highlight">Don't forget to track each and every expense.</span>
@@ -193,7 +199,9 @@ const SaveMoreContent = () => {
           </span>
 
           <div className="save-progress-content">
-            {!goal || goal.monthlySalary <= 0 ? (
+            {goalLoading ? (
+              <Spinner label="Loading your spending…" />
+            ) : !goal || goal.monthlySalary <= 0 ? (
               <p className="summary-empty-text">Set your monthly salary to start tracking your spending.</p>
             ) : (
               <>

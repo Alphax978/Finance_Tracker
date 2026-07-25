@@ -1,6 +1,7 @@
 import { useUser } from '@clerk/clerk-react'
 import React, { useContext, useState } from 'react'
 import { financialRecordContext } from '../context/financialRecordContext'
+import Spinner from './Spinner'
 const FinancialRecordForm = () => {
 
     const {user} = useUser()
@@ -13,6 +14,7 @@ const FinancialRecordForm = () => {
     const [amount, setAmount] = useState<string>("")
     const [category, setCategory] = useState<string>("Food")
     const [paymentMethod, setPaymentMethod] = useState<string>("Cash")
+    const [submitting, setSubmitting] = useState(false)
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -26,13 +28,17 @@ const FinancialRecordForm = () => {
             paymentMethod: paymentMethod
         }
 
-        await addRecord(newRecord)
+        setSubmitting(true)
+        try {
+            await addRecord(newRecord)
 
-        setDescription("")
-        setAmount("")
-        setCategory("Food")
-        setPaymentMethod("Cash")
-
+            setDescription("")
+            setAmount("")
+            setCategory("Food")
+            setPaymentMethod("Cash")
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     
@@ -99,7 +105,9 @@ const FinancialRecordForm = () => {
             <option value="Bank Transfer">Bank Transfer</option>
           </select>
         </div>
-        <button type="submit">Add Record</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? (<><Spinner inline size="sm" />Adding…</>) : 'Add Record'}
+        </button>
         <p className="form-note">
           Your monthly total resets automatically at the end of each month.{" "}
           <span className="form-note-highlight-blue">Don't forget to track each and every expense.</span>

@@ -29,6 +29,70 @@ body::before {
     radial-gradient(600px circle at 50% 100%, rgba(220, 38, 38, 0.05), transparent 55%);
 }
 
+/* Shared loading spinner — used wherever content is waiting on a fetch,
+   as a full block (centered, with an optional label) or inline (small,
+   sits next to button text). Colors match the brand gradient. */
+.app-spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.app-spinner {
+  display: block;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: rgba(79, 70, 229, 0.15);
+  border-top-color: #4f46e5;
+  animation: app-spinner-spin 0.75s linear infinite;
+}
+
+.app-spinner-sm {
+  width: 15px;
+  height: 15px;
+  border-width: 2px;
+}
+
+.app-spinner-md {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.app-spinner-lg {
+  width: 46px;
+  height: 46px;
+  border-width: 4px;
+}
+
+.app-spinner-inline {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  /* Inline spinners always sit inside the app's gradient buttons, where the
+     default indigo-on-light-track colors would be nearly invisible —
+     white reads correctly against that background instead. */
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+}
+
+.app-spinner-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+@keyframes app-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   body::before {
     animation: bg-drift 24s ease-in-out infinite alternate;

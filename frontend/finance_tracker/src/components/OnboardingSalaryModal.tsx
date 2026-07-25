@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import Spinner from './Spinner'
 
 interface OnboardingSalaryModalProps {
   onSubmit: (monthlySalary: number, alertsEnabled: boolean) => Promise<void>
@@ -90,7 +91,7 @@ const OnboardingSalaryModal = ({ onSubmit, onSkip }: OnboardingSalaryModalProps)
           </div>
 
           <button type="submit" disabled={submitting || wantsAlert === null}>
-            {submitting ? 'Saving…' : 'Save and continue'}
+            {submitting ? (<><Spinner inline size="sm" />Saving…</>) : 'Save and continue'}
           </button>
         </form>
 
