@@ -8,7 +8,9 @@ export interface ToastItem {
 
 type Listener = (toasts: ToastItem[]) => void
 
-const DURATION_MS = 4000
+// Keep in sync with the toast-progress-shrink animation duration in App.css —
+// the progress bar's shrink time has no shared source with this constant.
+const DURATION_MS = 2800
 
 let toasts: ToastItem[] = []
 let nextId = 0

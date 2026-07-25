@@ -121,11 +121,11 @@ body::before {
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.16);
   overflow: hidden;
   pointer-events: auto;
-  animation: toast-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: toast-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .toast-item.is-closing {
-  animation: toast-slide-out 0.22s ease forwards;
+  animation: toast-slide-out 0.15s ease forwards;
 }
 
 .toast-icon {
@@ -183,7 +183,8 @@ body::before {
   height: 3px;
   width: 100%;
   transform-origin: left;
-  animation: toast-progress-shrink 4s linear forwards;
+  /* Must match DURATION_MS in utils/toastStore.ts — no shared source. */
+  animation: toast-progress-shrink 2.8s linear forwards;
 }
 
 .toast-success .toast-icon {
