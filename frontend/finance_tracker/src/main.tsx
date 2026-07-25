@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { ClerkProvider } from '@clerk/clerk-react'
-import { ToastContainer } from 'react-toastify'
+import ToastStack from './components/ToastStack.tsx'
 import { FinancialRecordsProvider } from './context/financialRecordContext.tsx'
 import { CurrencyProvider } from './context/currencyContext.tsx'
 
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
       <CurrencyProvider>
         <FinancialRecordsProvider>
           <App />
-          <ToastContainer />
+          <ToastStack />
         </FinancialRecordsProvider>
       </CurrencyProvider>
     </ClerkProvider>

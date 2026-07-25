@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import {useUser, SignedIn, SignedOut} from "@clerk/clerk-react"
 import { Navigate } from "react-router-dom"
 import axios from "axios"
-import { toast } from "react-toastify"
+import { toast } from "../utils/toastStore"
 import FinancialRecordForm from '../components/Financial-Record-Form'
 import FinancialRecordList from '../components/Financial-Record-List'
 import MonthlySummary from '../components/Monthly-Summary'

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "../utils/toastStore";
 
 interface financialRecord {
     id?: string;

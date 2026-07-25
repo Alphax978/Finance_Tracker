@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useUser, SignedIn, SignedOut } from '@clerk/clerk-react'
 import { Navigate } from 'react-router-dom'
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { toast } from '../utils/toastStore'
 import { financialRecordContext } from '../context/financialRecordContext'
 import Spinner from '../components/Spinner'
 
