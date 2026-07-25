@@ -43,6 +43,8 @@
   },
   // api/index.ts is bundled and type-stripped by Vercel's own build
   // pipeline, not by this project's tsc — it lives outside rootDir on
-  // purpose and isn't part of the local build/dev program.
-  "exclude": ["api"]
+  // purpose and isn't part of the local build/dev program. build/ has to
+  // be excluded too, otherwise a second build without deleting the first
+  // picks up its own prior .d.ts output as input and collides with itself.
+  "exclude": ["api", "build"]
 }
