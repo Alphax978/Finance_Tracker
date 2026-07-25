@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import axios from "axios";
+import api from "../utils/api";
 import { toast } from "../utils/toastStore";
 
 interface financialRecord {
@@ -40,9 +40,7 @@ export const FinancialRecordsProvider = ({
     // state from within an effect body can't be statically verified as
     // async-safe and trips the set-state-in-effect lint rule.
     const loadRecordsFromServer = async (userId: string): Promise<financialRecord[]> => {
-        const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/financialrecord/getUserById/${userId}`
-        )
+        const response = await api.get(`/api/financialrecord/getUserById/${userId}`)
         return response.data.records.map((record: financialRecord & { _id: string }) => ({
             ...record,
             id: record._id,
@@ -93,10 +91,7 @@ export const FinancialRecordsProvider = ({
 
     const addRecord = async(record: financialRecord) => {
         try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/financialrecord/add`,
-                record
-            )
+            const response = await api.post("/api/financialrecord/add", record)
             const savedRecord = response.data.savedRecord
             setRecords((prev) => [...prev, { ...savedRecord, id: savedRecord._id }])
             console.log(records)
@@ -108,10 +103,7 @@ export const FinancialRecordsProvider = ({
 
     const updateRecord = async(id: string, newRecord: financialRecord) => {
         try {
-            await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/api/financialrecord/edit/${id}`,
-                newRecord
-            )
+            await api.put(`/api/financialrecord/edit/${id}`, newRecord)
             setRecords((prev) =>
                 prev.map((record) => (record.id === id ? { ...newRecord, id } : record))
             )
@@ -123,9 +115,7 @@ export const FinancialRecordsProvider = ({
 
     const deleteRecord = async(id: string) => {
         try {
-            await axios.delete(
-                `${import.meta.env.VITE_BACKEND_URL}/api/financialrecord/delete/${id}`
-            )
+            await api.delete(`/api/financialrecord/delete/${id}`)
             setRecords((prev) => prev.filter((record) => record.id !== id))
             toast.success("Record deleted successfully")
         } catch {

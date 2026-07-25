@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { useUser } from '@clerk/clerk-react'
-import axios from 'axios'
+import api from '../utils/api'
 import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
 
@@ -46,9 +46,7 @@ const MonthlySummary = () => {
 
     const fetchSummary = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/financialrecord/summary/${user.id}`
-        )
+        const response = await api.get(`/api/financialrecord/summary/${user.id}`)
         setMonthly(response.data.monthly)
         setYearly(response.data.yearly)
       } catch {

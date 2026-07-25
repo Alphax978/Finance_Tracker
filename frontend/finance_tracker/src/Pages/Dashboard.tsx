@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import {useUser, SignedIn, SignedOut} from "@clerk/clerk-react"
 import { Navigate } from "react-router-dom"
-import axios from "axios"
+import api from "../utils/api"
 import { toast } from "../utils/toastStore"
 import FinancialRecordForm from '../components/Financial-Record-Form'
 import FinancialRecordList from '../components/Financial-Record-List'
@@ -47,8 +47,8 @@ const DashboardContent = () => {
     // SavingsGoal only exists for users who've set up a salary, so this is
     // the one place every signed-in user's email is guaranteed to get
     // recorded — needed for the monthly digest to actually reach everyone.
-    axios
-      .put(`${import.meta.env.VITE_BACKEND_URL}/api/userprofile/${user.id}`, { email })
+    api
+      .put(`/api/userprofile/${user.id}`, { email })
       .catch(() => {
         // non-critical — worst case the digest email skips this user this month
       })
@@ -59,9 +59,7 @@ const DashboardContent = () => {
 
     const loadGoal = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}`
-        )
+        const response = await api.get(`/api/savingsgoal/${user.id}`)
         if (response.data.goal) {
           setGoal(response.data.goal)
         } else {
@@ -80,9 +78,7 @@ const DashboardContent = () => {
 
     const loadProgress = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}/progress`
-        )
+        const response = await api.get(`/api/savingsgoal/${user.id}/progress`)
         if (response.data.goal) {
           setProgress({ spent: response.data.spent, percentSpent: response.data.percentSpent })
         }
@@ -98,14 +94,11 @@ const DashboardContent = () => {
   const handleOnboardingSubmit = async (monthlySalary: number, alertsEnabled: boolean) => {
     if (!user) return
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}`,
-        {
-          email: user.primaryEmailAddress?.emailAddress ?? '',
-          monthlySalary,
-          alertsEnabled,
-        }
-      )
+      const response = await api.put(`/api/savingsgoal/${user.id}`, {
+        email: user.primaryEmailAddress?.emailAddress ?? '',
+        monthlySalary,
+        alertsEnabled,
+      })
       setGoal(response.data.goal)
       setShowOnboarding(false)
       toast.success(
@@ -124,14 +117,11 @@ const DashboardContent = () => {
     try {
       // record that onboarding was dismissed so it doesn't keep reappearing —
       // monthlySalary stays 0, which the rest of the dashboard already treats as "not set"
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}`,
-        {
-          email: user.primaryEmailAddress?.emailAddress ?? '',
-          monthlySalary: 0,
-          alertsEnabled: false,
-        }
-      )
+      const response = await api.put(`/api/savingsgoal/${user.id}`, {
+        email: user.primaryEmailAddress?.emailAddress ?? '',
+        monthlySalary: 0,
+        alertsEnabled: false,
+      })
       setGoal(response.data.goal)
     } catch {
       // if this fails, the prompt may just reappear next visit — not worth surfacing an error

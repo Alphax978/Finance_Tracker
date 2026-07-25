@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import ToastStack from './components/ToastStack.tsx'
+import AuthTokenRegistrar from './components/AuthTokenRegistrar.tsx'
 import { FinancialRecordsProvider } from './context/financialRecordContext.tsx'
 import { CurrencyProvider } from './context/currencyContext.tsx'
 
@@ -16,6 +17,7 @@ if (!publishedKey){
 createRoot(document.getElementById('root')!).render(
    <StrictMode>
     <ClerkProvider publishableKey={publishedKey}>
+      <AuthTokenRegistrar />
       <CurrencyProvider>
         <FinancialRecordsProvider>
           <App />

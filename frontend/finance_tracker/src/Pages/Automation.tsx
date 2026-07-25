@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useUser, SignedIn, SignedOut } from '@clerk/clerk-react'
 import { Navigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { toast } from '../utils/toastStore'
 import { financialRecordContext } from '../context/financialRecordContext'
 import Spinner from '../components/Spinner'
@@ -55,9 +55,7 @@ const AutomationContent = () => {
 
     const loadSubscription = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/subscription/${user.id}`
-        )
+        const response = await api.get(`/api/subscription/${user.id}`)
         setSubscription(response.data.subscription)
         setIsActive(response.data.isActive)
       } catch {
@@ -76,9 +74,7 @@ const AutomationContent = () => {
     const loadIntegrations = async () => {
       setIntegrationsLoading(true)
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/automation/${user.id}`
-        )
+        const response = await api.get(`/api/automation/${user.id}`)
         setIntegrations(response.data.integrations ?? [])
       } catch {
         toast.error('Failed to load connected chats')
@@ -94,10 +90,9 @@ const AutomationContent = () => {
     if (!user) return
     setSubscribing(true)
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/subscription/${user.id}/checkout`,
-        { email: user.primaryEmailAddress?.emailAddress ?? '' }
-      )
+      const response = await api.post(`/api/subscription/${user.id}/checkout`, {
+        email: user.primaryEmailAddress?.emailAddress ?? '',
+      })
       window.location.href = response.data.url
     } catch {
       toast.error('Could not start checkout — billing may not be configured yet')
@@ -108,9 +103,7 @@ const AutomationContent = () => {
   const handleManageBilling = async () => {
     if (!user) return
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/subscription/${user.id}/portal`
-      )
+      const response = await api.post(`/api/subscription/${user.id}/portal`)
       window.location.href = response.data.url
     } catch {
       toast.error('Could not open the billing portal')
@@ -121,10 +114,7 @@ const AutomationContent = () => {
     if (!user) return
     setGeneratingFor(platform)
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/automation/${user.id}/link-code`,
-        { platform }
-      )
+      const response = await api.post(`/api/automation/${user.id}/link-code`, { platform })
       setLinkCode({ platform, code: response.data.code, botUsername: response.data.botUsername })
     } catch {
       toast.error('Failed to generate a linking code')
@@ -145,9 +135,7 @@ const AutomationContent = () => {
   const handleDisconnect = async (platform: Platform) => {
     if (!user) return
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/automation/${user.id}/${platform}`
-      )
+      await api.delete(`/api/automation/${user.id}/${platform}`)
       setIntegrations((prev) => prev.filter((i) => i.platform !== platform))
       toast.success(`${PLATFORM_LABEL[platform]} disconnected`)
     } catch {

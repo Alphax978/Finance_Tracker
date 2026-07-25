@@ -1,9 +1,23 @@
 import { Request, Response } from "express";
 import { sendMonthlyDigestForUser, runMonthlyDigestForAllUsers } from "../utils/monthlyDigest";
 
+// These are admin/testing tools, not user-facing endpoints — none of them
+// are ever called from the frontend, so they're gated by CRON_SECRET rather
+// than a per-user Clerk check. triggerDigestForAll in particular sends email
+// to every user in the app on demand, which must never be publicly callable.
+const isAuthorizedByCronSecret = (req: Request): boolean => {
+    const secret = process.env.CRON_SECRET;
+    return !secret || req.headers.authorization === `Bearer ${secret}`;
+};
+
 // Manual endpoints exist purely so the digest can be tested/re-run without
 // waiting for the real cron boundary (the 1st of the month).
 export const triggerDigestForUser = async (req: Request, res: Response) => {
+    if (!isAuthorizedByCronSecret(req)) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+
     try {
         const { userId } = req.params;
         const { email, year, month } = req.body as { email?: string; year?: number; month?: number };
@@ -25,6 +39,11 @@ export const triggerDigestForUser = async (req: Request, res: Response) => {
 };
 
 export const triggerDigestForAll = async (req: Request, res: Response) => {
+    if (!isAuthorizedByCronSecret(req)) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+
     try {
         const { year, month } = req.body as { year?: number; month?: number };
         const now = new Date();
@@ -45,8 +64,7 @@ export const triggerDigestForAll = async (req: Request, res: Response) => {
 // requests, which is what keeps this from being a public "send email to
 // everyone" endpoint.
 export const triggerDigestCron = async (req: Request, res: Response) => {
-    const secret = process.env.CRON_SECRET;
-    if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+    if (!isAuthorizedByCronSecret(req)) {
         res.status(401).json({ message: "Unauthorized" });
         return;
     }

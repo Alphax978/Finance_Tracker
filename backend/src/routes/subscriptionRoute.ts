@@ -4,11 +4,12 @@ import {
     createCheckoutSession,
     createPortalSession,
 } from "../controllers/subscriptionController";
+import { requireSelf } from "../middleware/auth";
 
 const subscriptionRouter = express.Router();
 
-subscriptionRouter.get("/:userId", getSubscriptionStatus);
-subscriptionRouter.post("/:userId/checkout", createCheckoutSession);
-subscriptionRouter.post("/:userId/portal", createPortalSession);
+subscriptionRouter.get("/:userId", requireSelf, getSubscriptionStatus);
+subscriptionRouter.post("/:userId/checkout", requireSelf, createCheckoutSession);
+subscriptionRouter.post("/:userId/portal", requireSelf, createPortalSession);
 
 export default subscriptionRouter;

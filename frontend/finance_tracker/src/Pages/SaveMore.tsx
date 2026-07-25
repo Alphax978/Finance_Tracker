@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useUser, SignedIn, SignedOut } from '@clerk/clerk-react'
 import { Navigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { toast } from '../utils/toastStore'
 import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
@@ -49,9 +49,7 @@ const SaveMoreContent = () => {
 
     const load = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}`
-        )
+        const response = await api.get(`/api/savingsgoal/${user.id}`)
         if (response.data.goal) {
           setGoal(response.data.goal)
           setMonthlySalary(String(response.data.goal.monthlySalary))
@@ -71,9 +69,7 @@ const SaveMoreContent = () => {
 
     const loadProgress = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}/progress`
-        )
+        const response = await api.get(`/api/savingsgoal/${user.id}/progress`)
         if (response.data.goal) {
           setGoal(response.data.goal)
           setProgress({
@@ -107,14 +103,11 @@ const SaveMoreContent = () => {
 
     setSaving(true)
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/savingsgoal/${user.id}`,
-        {
-          email: user.primaryEmailAddress?.emailAddress ?? '',
-          monthlySalary: salary,
-          alertsEnabled: true,
-        }
-      )
+      const response = await api.put(`/api/savingsgoal/${user.id}`, {
+        email: user.primaryEmailAddress?.emailAddress ?? '',
+        monthlySalary: salary,
+        alertsEnabled: true,
+      })
       setGoal(response.data.goal)
       toast.success('Alert scheduled')
     } catch {
