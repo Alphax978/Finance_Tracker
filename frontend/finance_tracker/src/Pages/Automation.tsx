@@ -210,13 +210,28 @@ const AutomationContent = () => {
             {(Object.keys(PLATFORM_LABEL) as Platform[]).map((platform) => {
               const connected = connectedPlatforms.has(platform)
               return (
-                <div key={platform} className="automation-platform-card">
+                <div
+                  key={platform}
+                  className={`automation-platform-card ${!PLATFORM_AVAILABLE[platform] ? 'is-coming-soon' : ''}`}
+                >
                   <div className="automation-platform-header">
                     <span className="automation-platform-name">{PLATFORM_LABEL[platform]}</span>
-                    {!PLATFORM_AVAILABLE[platform] && <span className="automation-platform-pending">Pending Meta approval</span>}
                   </div>
 
-                  {connected ? (
+                  {!PLATFORM_AVAILABLE[platform] ? (
+                    <div className="automation-coming-soon">
+                      <span className="automation-coming-soon-badge">
+                        <svg className="automation-coming-soon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="M12 7v5l3 3" />
+                        </svg>
+                        Coming soon
+                      </span>
+                      <p className="automation-coming-soon-text">
+                        {PLATFORM_LABEL[platform]} support is on the way, pending Meta's business approval.
+                      </p>
+                    </div>
+                  ) : connected ? (
                     <>
                       <p className="automation-platform-status is-connected">Connected</p>
                       <button type="button" className="automation-disconnect-button" onClick={() => handleDisconnect(platform)}>
@@ -267,12 +282,6 @@ const AutomationContent = () => {
                             >
                               Open Telegram &amp; connect
                             </a>
-                          )}
-
-                          {!PLATFORM_AVAILABLE[platform] && (
-                            <p className="automation-link-pending-note">
-                              This will start working once {PLATFORM_LABEL[platform]} support goes live.
-                            </p>
                           )}
 
                           <div className="automation-link-footer">
