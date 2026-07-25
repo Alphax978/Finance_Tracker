@@ -5,6 +5,17 @@ import { getTelegramBot } from "../utils/telegramBot";
 // scripts/registerTelegramWebhook.ts) — this is what makes the bot work on
 // a serverless deployment, where nothing can stay running to long-poll.
 export const receiveTelegramUpdate = async (req: Request, res: Response) => {
+    // Telegram echoes the secret_token set during registration back on every
+    // real request via this header — without checking it, anyone who finds
+    // the URL could POST forged updates (e.g. fake messages for a real
+    // connected chat id) and have them processed as if Telegram sent them.
+    const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    const providedSecret = req.headers["x-telegram-bot-api-secret-token"];
+    if (expectedSecret && providedSecret !== expectedSecret) {
+        res.sendStatus(401);
+        return;
+    }
+
     const bot = getTelegramBot();
     if (!bot) {
         res.sendStatus(200);
