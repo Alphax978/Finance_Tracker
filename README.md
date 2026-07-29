@@ -6,7 +6,7 @@
   A personal finance tracker you can also update by just texting it —
   log an expense from Telegram without ever opening the app.
 
-  [![Live App](https://img.shields.io/badge/Live_App-financetracker.store-4f46e5?style=for-the-badge)](https://financetracker.store)
+  [![Live App](https://img.shields.io/badge/Live_App-financetracker.blog-4f46e5?style=for-the-badge)](https://financetracker.blog)
 
   ![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)
   ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -26,7 +26,7 @@ goal tied to a real salary, and get warned by email before overspending.
 It also supports adding expenses hands-free straight from a chat app —
 no need to open the app at all.
 
-**Live app:** [financetracker.store](https://financetracker.store)
+**Live app:** [financetracker.blog](https://financetracker.blog)
 
 <br />
 
