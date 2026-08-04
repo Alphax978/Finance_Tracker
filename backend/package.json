@@ -22,7 +22,7 @@
     "resend": "^6.18.0",
     "stripe": "^22.3.2",
     "telegraf": "^4.16.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
