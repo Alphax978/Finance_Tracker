@@ -4,6 +4,9 @@ import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
 import { categoryColor } from '../constants/categories'
 import Spinner from './Spinner'
+import { truncateText } from '../utils/truncateText'
+
+
 
 interface RecordRowProps {
   record: {
@@ -62,7 +65,7 @@ const RecordRow = ({ record, onUpdate, onDelete }: RecordRowProps) => {
 
   return (
     <tr>
-      <td onClick={() => setEditingField('description')}>
+      <td onClick={() => setEditingField('description')} title={description}>
         {editingField === 'description' ? (
           <input
             type="text"
@@ -72,7 +75,7 @@ const RecordRow = ({ record, onUpdate, onDelete }: RecordRowProps) => {
             onBlur={() => commit({ description })}
           />
         ) : (
-          description
+          truncateText(description,25)
         )}
       </td>
       <td className="record-cell-amount" onClick={() => setEditingField('amount')}>
