@@ -24,7 +24,7 @@ interface RecordRowProps {
 
 type Field = 'description' | 'amount' | 'category' | 'paymentMethod'
 
-const RecordRow = ({ record, onUpdate, onDelete }: RecordRowProps) => {
+export const RecordRow = ({ record, onUpdate, onDelete }: RecordRowProps) => {
   const currency = useContext(currencyContext)
   if (!currency) {
     throw new Error('RecordRow must be used within a CurrencyProvider')
