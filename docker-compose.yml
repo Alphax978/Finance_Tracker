@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      # Overrides whatever MONGO_URI is in .env — inside Compose's network,
+      # the mongo service is reachable by its service name, not localhost.
+      MONGO_URI: mongodb://mongo:27017/finance_tracker
+    ports:
+      - "6100:6100"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:

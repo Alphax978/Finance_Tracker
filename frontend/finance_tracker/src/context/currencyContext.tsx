@@ -2,6 +2,7 @@ import { createContext, useEffect, useState, type ReactNode } from "react"
 
 const currencyDisplayNames = new Intl.DisplayNames(["en"], { type: "currency" })
 
+// eslint-disable-next-line react-refresh/only-export-components -- consumed directly via useContext across many files; not worth a hook-file split
 export const CURRENCIES = Intl.supportedValuesOf("currency")
     .map((code) => ({ code, label: currencyDisplayNames.of(code) ?? code }))
     .sort((a, b) => a.code.localeCompare(b.code))
@@ -19,6 +20,7 @@ const STORAGE_KEY = "financeTracker.currency"
 const isCurrencyCode = (value: string | null): value is CurrencyCode =>
     !!value && CURRENCIES.some((c) => c.code === value)
 
+// eslint-disable-next-line react-refresh/only-export-components -- same reason as above
 export const currencyContext = createContext<CurrencyContextType | undefined>(undefined)
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {

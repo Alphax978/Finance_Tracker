@@ -24,6 +24,7 @@ interface financialRecordContextType {
 }
 
 
+// eslint-disable-next-line react-refresh/only-export-components -- consumed directly via useContext across many files; not worth a hook-file split
 export const financialRecordContext = createContext<financialRecordContextType | undefined>(undefined)
 
 export const FinancialRecordsProvider = ({
