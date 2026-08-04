@@ -1,0 +1,24 @@
+{
+  // ts-jest needs CommonJS output and a real emit step — tsconfig.app.json
+  // is deliberately bundler-mode/noEmit for Vite, which ts-jest can't run
+  // under directly, so tests get their own config instead of fighting that one.
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "rootDir": "./src",
+    // "node10" (the modern name for the old "node" resolution) is what
+    // actually matches how ts-jest resolves modules under Jest's real
+    // Node require() runtime — "bundler" mode from tsconfig.app.json
+    // assumes a bundler resolves imports, which isn't true here.
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "verbatimModuleSyntax": false,
+    "noEmit": false,
+    "isolatedModules": true,
+    "types": ["jest", "@testing-library/jest-dom", "node"]
+  },
+  // Override, not inherit: tsconfig.app.json excludes *.test.ts(x) from the
+  // production build, but this config's whole job is compiling those files.
+  "include": ["src"],
+  "exclude": []
+}
