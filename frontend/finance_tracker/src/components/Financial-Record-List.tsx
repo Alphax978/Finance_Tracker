@@ -5,6 +5,7 @@ import { currencyContext } from '../context/currencyContext'
 import { categoryColor } from '../constants/categories'
 import Spinner from './Spinner'
 import { truncateText } from '../utils/truncateText'
+import { formatRecordDate } from '../utils/formatRecordDate'
 
 
 
@@ -135,7 +136,7 @@ export const RecordRow = ({ record, onUpdate, onDelete }: RecordRowProps) => {
           paymentMethod
         )}
       </td>
-      <td className="record-cell-date">{new Date(record.date).toLocaleDateString()}</td>
+      <td className="record-cell-date">{formatRecordDate(record.date)}</td>
       <td>
         <button type="button" className="delete-button" onClick={() => setConfirmingDelete(true)}>
           Delete
