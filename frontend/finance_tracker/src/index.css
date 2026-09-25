@@ -1,3 +1,14 @@
+/* Tailwind v4, loaded one layer at a time on purpose.
+   Preflight (Tailwind's CSS reset) is deliberately NOT imported: App.css
+   already styles headings, buttons, inputs and tables directly, and Preflight
+   would strip the browser defaults those rules build on top of. Leaving it out
+   means Tailwind utilities are purely additive and nothing existing changes.
+   Compiled by the tailwindcss() plugin in vite.config.ts. */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
