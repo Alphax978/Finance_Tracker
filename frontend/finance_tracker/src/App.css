@@ -1266,6 +1266,25 @@ input[type="number"]::-webkit-inner-spin-button {
   color: #cbd5e1;
 }
 
+/* Category filter row, between the list header and the table.
+   Markup is the .record-list-filter div in Financial-Record-List.tsx. */
+.record-list-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* Same muted micro-label treatment as .record-list-stat-label and the table
+   column headers, so the filter reads as part of the list rather than a link. */
+.record-list-filter label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
 .record-list-table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -1384,6 +1403,44 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .record-list-container input:focus,
 .record-list-container select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+/* Overrides .record-list-container select above, which sets width: 100% for
+   the inline edit dropdowns inside the table. This rule must come after it:
+   both selectors have the same specificity, so whichever is written last
+   wins. The filter sits outside the table and only needs to be wide enough
+   for its longest option. */
+.record-list-filter select {
+  width: auto;
+  min-width: 150px;
+  /* appearance: none drops the native dropdown arrow so the chevron below
+     renders the same way in every browser. Without it you get two arrows. */
+  appearance: none;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-size: 12px;
+  border: 1px solid #dde2ea;
+  border-radius: 8px;
+  /* Extra right padding keeps the text clear of the chevron. */
+  padding: 7px 32px 7px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.record-list-filter select:hover {
+  border-color: #c7d2e0;
+}
+
+/* Matches the focus ring used by .record-list-container select:focus above. */
+.record-list-filter select:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);

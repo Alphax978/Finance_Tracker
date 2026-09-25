@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { financialRecordContext } from '../context/financialRecordContext'
 import { currencyContext } from '../context/currencyContext'
-import { categoryColor } from '../constants/categories'
+import { categoryColor, CATEGORIES } from '../constants/categories'
 import Spinner from './Spinner'
 import { truncateText } from '../utils/truncateText'
 import { formatRecordDate } from '../utils/formatRecordDate'
@@ -216,6 +216,31 @@ const FinancialRecordList = () => {
     })
     .reduce((sum, record) => sum + record.amount, 0)
 
+  // Which category the table is filtered to. "All" means no filter is applied,
+  // so every record is shown.
+  // Set by the filter dropdown below, and read by the filtering step that
+  // decides which records reach the table.
+  const [selectedCategory, setSelectedCategory] = useState('All')
+
+  // The records the table actually shows. "All" means no filter, so every
+  // record is used.
+  // filter() builds a new array instead of changing the one from context,
+  // which matters because Dashboard, Insights, SaveMore and Monthly-Summary
+  // all read that same array.
+  let visibleRecords = records
+  if (selectedCategory !== 'All') {
+    visibleRecords = records.filter((record) => record.category === selectedCategory)
+  }
+
+  // Both empty cases share the same box below, so only the wording changes.
+  // Having no records at all is a different situation from having records that
+  // the current filter excluded, and saying "add your first one" would be wrong
+  // for the second one.
+  let emptyMessage = 'No records in this category.'
+  if (records.length === 0) {
+    emptyMessage = 'No records yet — add your first one above.'
+  }
+
   return (
     <div className="record-list-container" id="record-list">
       <div className="record-list-header">
@@ -238,16 +263,36 @@ const FinancialRecordList = () => {
         </div>
       </div>
 
+      {/* Category filter. It sits outside record-list-header because that
+          element is a space-between flex row built for exactly two children.
+          Styled by .record-list-filter in App.css. */}
+      <div className="record-list-filter">
+        <label htmlFor="category-filter">Category</label>
+        <select
+          id="category-filter"
+          value={selectedCategory}
+          onChange={(event) => setSelectedCategory(event.target.value)}
+        >
+          <option value="All">All</option>
+          {/* One option per name in CATEGORIES, from constants/categories.ts */}
+          {CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {isLoading ? (
         <Spinner label="Loading your records…" />
-      ) : records.length === 0 ? (
+      ) : visibleRecords.length === 0 ? (
         <div className="record-list-empty">
           <svg className="record-list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />
             <line x1="9" y1="8" x2="15" y2="8" />
             <line x1="9" y1="12" x2="15" y2="12" />
           </svg>
-          <span>No records yet — add your first one above.</span>
+          <span>{emptyMessage}</span>
         </div>
       ) : (
         <div className="record-list-table-wrap">
@@ -263,7 +308,7 @@ const FinancialRecordList = () => {
               </tr>
             </thead>
             <tbody>
-              {records.map((record) => (
+              {visibleRecords.map((record) => (
                 <RecordRow
                   key={record.id}
                   record={record}
